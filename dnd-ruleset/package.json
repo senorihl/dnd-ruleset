@@ -1,0 +1,19 @@
+{
+  "name": "dnd-ruleset",
+  "description": "Ruleset for Dnd 5th edition",
+  "version": "0.0.1",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "typings": "dist/index.d.ts",
+  "author": "Senorihl <senorihl@gmail.com>",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^12.1.4",
+    "rollup": "^4.44.1"
+  },
+  "files": [
+    "dist/index.d.ts",
+    "dist/index.esm.js",
+    "dist/index.cjs.js"
+  ]
+}
