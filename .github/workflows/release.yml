@@ -8,9 +8,12 @@ on:
       - 'dnd-ruleset/**'
 
 jobs:
-  publish:
+  build:
+    strategy:
+      matrix:
+        registry: [github]
     runs-on: ubuntu-latest
-    name: release
+    name: build
     steps:
       - name: Checkout commit
         uses: actions/checkout@v4
@@ -20,15 +23,32 @@ jobs:
         with:
           node-version: 'lts/*'
           cache: 'yarn'
+          registry-url: ${{ matrix.registry == 'github' && 'https://npm.pkg.github.com' || '' }}
+          always-auth: true
+        env:
+          NODE_AUTH_TOKEN: ${{ matrix.registry == 'github' && secrets.PKG_GITHUB_TOKEN || secrets.NPM_GITHUB_TOKEN }}
 
-      - name: Install packages
-        run: yarn
+      - name: Setup .yarnrc.yml
+        if: ${{ matrix.registry == 'github' }}
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.PKG_GITHUB_TOKEN }}" > ~/.npmrc
+          echo "@senorihl:registry=https://npm.pkg.github.com" > ~/.npmrc
+          yarn config set npmScopes.senorihl.npmRegistryServer "https://npm.pkg.github.com"
+          yarn config set npmScopes.senorihl.npmAlwaysAuth true
+          yarn config set npmScopes.senorihl.npmAuthToken ${{ secrets.PKG_GITHUB_TOKEN }}
 
       - name: Build packages
-        run: yarn workspace dnd-ruleset rollup -c
-
-      - name: Upload built files
-        uses: actions/upload-artifact@v4
-        with:
-          name: js-files
-          path: dnd-ruleset/dist/*
+        run: |
+          yarn
+          yarn workspace dnd-ruleset rollup -c
+          if git --no-pager log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+$";
+          then
+            ${{ matrix.registry == 'github' && 'sed -ibak ''s/dnd-ruleset/@senorihl\/dnd-ruleset/g'' dnd-ruleset/package.json' || '' }}
+            yarn workspace ${{ matrix.registry == 'github' && '@senorihl/dnd-ruleset' || 'dnd-ruleset' }} publish
+          else
+            yarn workspace dnd-ruleset version --prepatch --preid "${{ github.sha }}" --no-git-tag-version
+            ${{ matrix.registry == 'github' && 'sed -ibak ''s/dnd-ruleset/@senorihl\/dnd-ruleset/g'' dnd-ruleset/package.json' || '' }}
+            yarn workspace ${{ matrix.registry == 'github' && '@senorihl/dnd-ruleset' || 'dnd-ruleset' }} publish --tag dev
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ matrix.registry == 'github' && secrets.PKG_GITHUB_TOKEN || secrets.NPM_GITHUB_TOKEN }}

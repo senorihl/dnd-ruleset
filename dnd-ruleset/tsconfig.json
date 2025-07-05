@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
     "declaration": true,
-    "declarationDir": "dist"
+    "declarationDir": "dist",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist", "rollup.config.js"]
