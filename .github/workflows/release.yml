@@ -12,6 +12,7 @@ jobs:
     strategy:
       matrix:
         registry: [github]
+
     runs-on: ubuntu-latest
     name: build
     steps:
