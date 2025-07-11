@@ -1,0 +1,45 @@
+{
+  "expo": {
+    "name": "TTRPG Companion",
+    "slug": "ttrpg-companion",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#4059AD"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "link.senorihl.ttrpg"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#4059AD"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "link.senorihl.ttrpg"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "scheme": "ttrpg",
+    "plugins": [
+      "expo-font",
+      "expo-router",
+      "expo-sqlite"
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "cc2f3f3d-faa1-4803-b074-78238b830c7d"
+      }
+    },
+    "owner": "senorihl"
+  }
+}
